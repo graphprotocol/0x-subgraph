@@ -17,15 +17,15 @@ dataSources:
     - name: ExchangeV2
       file: ./abis/ExchangeV2.json
     eventHandlers:
-    - event: Fill(address,address,address,address,uint256,uint256,uint256,uint256,bytes32,bytes,bytes) #M ExchangeCore.sol
+    - event: Fill(address,address,address,address,uint256,uint256,uint256,uint256,bytes32,bytes,bytes) # From MExchangeCore.sol
       handler: handleFill
-    - event: Cancle(address,address,address,bytes32,bytes,bytes) # MExchangeCore.sol
+    - event: Cancle(address,address,address,bytes32,bytes,bytes) # From MExchangeCore.sol
       handler: handleCancle
-    - event: CancleUpTo(address,address,uint256) # MExchangeCore.sol
+    - event: CancleUpTo(address,address,uint256) # From MExchangeCore.sol
       handler: handleCancleUpTo
-    - event: AssetProxyRegistered(bytes4,address) # MAssetProxyDispatcher.sol
+    - event: AssetProxyRegistered(bytes4,address) # From MAssetProxyDispatcher.sol
       handler: handleAssetProxyRegistered
-    - event: SignatureValidatorApproval(address,address,bool) # MSignatureValidator.sol
+    - event: SignatureValidatorApproval(address,address,bool) # From MSignatureValidator.sol
       handler: handleSignatureValidatorApproval
     file: ./mappings/ExchangeV2.ts
 - kind: ethereum/contract
@@ -43,9 +43,9 @@ dataSources:
     - name: ERC20ProxyV2
       file: ./abis/ERC20ProxyV2.json
     eventHandlers:
-    - event: AuthorizedAddressAdded(address,address) # MAuthorizable.sol
+    - event: AuthorizedAddressAdded(address,address) # From MAuthorizable.sol
       handler: handleAdded
-    - event: AuthorizedAddressRemoved(address,address) # MAuthorizable.sol
+    - event: AuthorizedAddressRemoved(address,address) # From MAuthorizable.sol
       handler: handleRemoved
     file: ./mappings/ERC20ProxyV2.ts
 - kind: ethereum/contract
@@ -63,29 +63,29 @@ dataSources:
     - name: ERC721ProxyV2
       file: ./abis/ERC721ProxyV2.json
     eventHandlers:
-    - event: AuthorizedAddressAdded(address,address) # MAuthorizable.sol
+    - event: AuthorizedAddressAdded(address,address) # From MAuthorizable.sol
       handler: handleAdded
-    - event: AuthorizedAddressRemoved(address,address) # MAuthorizable.sol
+    - event: AuthorizedAddressRemoved(address,address) # From MAuthorizable.sol
       handler: handleRemoved
-    file: ./mappings/ExchangeV2.ts
-- kind: ethereum/contract
-  name: ZRXToken
-  source:
-    address: "0xe41d2489571d322189246dafa5ebde1f4699f498" # Mainnet: 0xe41d2489571d322189246dafa5ebde1f4699f498 (1 version)
-    abi: ZRXToken
-  mapping:
-    kind: ethereum/events
-    apiVersion: 0.0.1
-    language: wasm/assemblyscript
-    entities:
-    - ZRXTokenOwner
-    - AllowanceApproval
-    abis:
-    - name: ZRXToken
-      file: ./abis/ZRXToken.json
-    eventHandlers:
-    #    - event: Transfer(address,address,uint256)  #commenting out for now, because it is so slow
-    #      handler: handleTransfer
-    #    - event: Approval(address,address,uint256)
-    #      handler: handleAllowanceApproval
-    file: ./mappings/ZRXToken.ts
+    file: ./mappings/ERC721ProxyV2.ts
+#- kind: ethereum/contract
+#  name: ZRXToken
+#  source:
+#    address: "0xe41d2489571d322189246dafa5ebde1f4699f498" # Mainnet: 0xe41d2489571d322189246dafa5ebde1f4699f498 (1 version)
+#    abi: ZRXToken
+#  mapping:
+#    kind: ethereum/events
+#    apiVersion: 0.0.1
+#    language: wasm/assemblyscript
+#    entities:
+#    - ZRXTokenOwner
+#    - AllowanceApproval
+#    abis:
+#    - name: ZRXToken
+#      file: ./abis/ZRXToken.json
+#    eventHandlers:
+#        - event: Transfer(address,address,uint256)  #commenting out for now, because it is so slow
+#          handler: handleTransfer
+#        - event: Approval(address,address,uint256)  #commenting out for now, because it is so slow
+#          handler: handleAllowanceApproval
+#    file: ./mappings/ZRXToken.ts

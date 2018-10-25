@@ -9,7 +9,7 @@ type User @entity {
 }
 
 # This is based on the relayer being likely to recieve all fees.
-type Relayer{
+type Relayer @entity {
     id: ID! # ethereum account where relayer recieves fees
     FilledOrders: [FilledOrders!] @derivedFrom(field: "relayer")
 #   feesRecieved: [BigInt] # must add together maker and Taker fees. I don't really need this, it is duplicate data. TODO: remove
@@ -50,7 +50,7 @@ type ProxyApprovedAddresses @entity {
     approvedAddresses: [Bytes]!
 }
 
-# event AssetProxyRegister - I believe this should be twice, just ERC20 and ERC721 asset
+# event AssetProxyRegister - I believe this should be only be emitted twice as of right now, just ERC20 and ERC721 asset
 type ApprovedProxyAddresses @entity {
     id: ID! # id field
     assetProxyAddress: Bytes!
