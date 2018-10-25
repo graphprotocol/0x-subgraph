@@ -23,6 +23,11 @@ This repository has these files created and ready to compile. The only thing tha
 
 We have provided a quick guide on how to start up the 0x-Subgraph graph node. If these steps aren't descriptive enough, the [getting started guide](https://github.com/graphprotocol/graph-node/blob/master/docs/getting-started.md) has in depth details on running a subgraph. 
 
+## Brief Description of 0x Contracts
+
+TODO: mention how we need to source two versions of the contracts 
+
+
 ## Steps to get the 0x-Subgraph Running 
   1. Install IPFS and run `ipfs init` followed by `ipfs daemon`
   2. Install PostgreSQL and run `initdb -D .postgres` followed by `pg_ctl -D .postgres start` and `createdb mainnet-0x-subgraph` (note this db name is used in the commands below for the mainnet examples)

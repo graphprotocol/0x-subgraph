@@ -1,17 +1,17 @@
 {
   "name": "0x-subgraph",
   "version": "1.0.0",
-  "repository": "https://github.com/graphprotocol/dharma-subgraph",
+  "repository": "https://github.com/graphprotocol/0x-subgraph",
   "license": "MIT",
   "scripts": {
     "codegen": "graph codegen --output-dir types/ subgraph.yaml",
-    "build": "graph build subgraph.yaml",
-    "build-ipfs": "graph build --ipfs /ip4/127.0.0.1/tcp/5001 subgraph.yaml",
-    "deploy":
-    "graph deploy --ipfs /ip4/127.0.0.1/tcp/5001 --node http://127.0.0.1:8020 --subgraph-name 0x subgraph.yaml"
+    "build": "graph build",
+    "build-ipfs": "graph build --ipfs /ip4/127.0.0.1/tcp/5001",
+    "deploy": "graph deploy --ipfs /ip4/127.0.0.1/tcp/5001 --verbosity --debug --node http://127.0.0.1:8020 --subgraph-name 0x-subgraph"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.3.2",
+    "graph-cli": "../../graph-cli/graph-cli",
     "@graphprotocol/graph-ts": "^0.3.4"
-  }
+  },
+  "author": "David Kajpust <kajpustd@gmail.com>"
 }

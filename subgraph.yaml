@@ -3,3 +3,89 @@ schema:
   file: ./schema.graphql
 dataSources:
 - kind: ethereum/contract
+  name: ExchangeV2
+  source:
+    address: "0x4f833a24e1f95d70f028921e27040ca56e09ab0b" # Mainnet 2.0: 0x4f833a24e1f95d70f028921e27040ca56e09ab0b
+    abi: ExchangeV2
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.1
+    language: wasm/assemblyscript
+    entities:
+    - axxxxxx
+    abis:
+    - name: ExchangeV2
+      file: ./abis/ExchangeV2.json
+    eventHandlers:
+    - event: Fill(address,address,address,address,uint256,uint256,uint256,uint256,bytes32,bytes,bytes) #M ExchangeCore.sol
+      handler: handleFill
+    - event: Cancle(address,address,address,bytes32,bytes,bytes) # MExchangeCore.sol
+      handler: handleCancle
+    - event: CancleUpTo(address,address,uint256) # MExchangeCore.sol
+      handler: handleCancleUpTo
+    - event: AssetProxyRegistered(bytes4,address) # MAssetProxyDispatcher.sol
+      handler: handleAssetProxyRegistered
+    - event: SignatureValidatorApproval(address,address,bool) # MSignatureValidator.sol
+      handler: handleSignatureValidatorApproval
+    file: ./mappings/ExchangeV2.ts
+- kind: ethereum/contract
+  name: ERC20ProxyV2
+  source:
+    address: "0x2240dab907db71e64d3e0dba4800c83b5c502d4e" # Mainnet 2.0: 0x2240dab907db71e64d3e0dba4800c83b5c502d4e
+    abi: ERC20ProxyV2
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.1
+    language: wasm/assemblyscript
+    entities:
+    - axxxxxx
+    abis:
+    - name: ERC20ProxyV2
+      file: ./abis/ERC20ProxyV2.json
+    eventHandlers:
+    - event: AuthorizedAddressAdded(address,address) # MAuthorizable.sol
+      handler: handleAdded
+    - event: AuthorizedAddressRemoved(address,address) # MAuthorizable.sol
+      handler: handleRemoved
+    file: ./mappings/ERC20ProxyV2.ts
+- kind: ethereum/contract
+  name: ERC721ProxyV2
+  source:
+    address: "0x208e41fb445f1bb1b6780d58356e81405f3e6127" # Mainnet 2.0: 0x208e41fb445f1bb1b6780d58356e81405f3e6127
+    abi: ERC721ProxyV2
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.1
+    language: wasm/assemblyscript
+    entities:
+    - axxxxxx
+    abis:
+    - name: ERC721ProxyV2
+      file: ./abis/ERC721ProxyV2.json
+    eventHandlers:
+    - event: AuthorizedAddressAdded(address,address) # MAuthorizable.sol
+      handler: handleAdded
+    - event: AuthorizedAddressRemoved(address,address) # MAuthorizable.sol
+      handler: handleRemoved
+    file: ./mappings/ExchangeV2.ts
+- kind: ethereum/contract
+  name: ZRXToken
+  source:
+    address: "0xe41d2489571d322189246dafa5ebde1f4699f498" # Mainnet: 0xe41d2489571d322189246dafa5ebde1f4699f498 (1 version)
+    abi: ZRXToken
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.1
+    language: wasm/assemblyscript
+    entities:
+    - ZRXTokenOwner
+    - AllowanceApproval
+    abis:
+    - name: ZRXToken
+      file: ./abis/ZRXToken.json
+    eventHandlers:
+    #    - event: Transfer(address,address,uint256)  #commenting out for now, because it is so slow
+    #      handler: handleTransfer
+    #    - event: Approval(address,address,uint256)
+    #      handler: handleAllowanceApproval
+    file: ./mappings/ZRXToken.ts
