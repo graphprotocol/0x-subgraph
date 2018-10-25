@@ -19,9 +19,9 @@ dataSources:
     eventHandlers:
     - event: Fill(address,address,address,address,uint256,uint256,uint256,uint256,bytes32,bytes,bytes) # From MExchangeCore.sol
       handler: handleFill
-    - event: Cancle(address,address,address,bytes32,bytes,bytes) # From MExchangeCore.sol
+    - event: Cancel(address,address,address,bytes32,bytes,bytes) # From MExchangeCore.sol
       handler: handleCancle
-    - event: CancleUpTo(address,address,uint256) # From MExchangeCore.sol
+    - event: CancelUpTo(address,address,uint256) # From MExchangeCore.sol
       handler: handleCancleUpTo
     - event: AssetProxyRegistered(bytes4,address) # From MAssetProxyDispatcher.sol
       handler: handleAssetProxyRegistered
