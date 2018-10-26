@@ -1,25 +1,16 @@
 type User @entity {
     id: ID! # ethereum account
-    filledOrders: [FilledOrders!] @derivedFrom(field: "user")
-    feesRecieved: [BigInt]
-    cancelled: [CancelledOrders!] @derivedFrom(field: "user")
+    filledOrdersMaker: [FilledOrder!] @derivedFrom(field: "maker") # there are maker taker duplicates , will need to deal with these
+    filledOrdersTaker: [FilledOrder!] @derivedFrom(field: "taker")
+    filledOrdersFeeRecipient: [FilledOrder!] @derivedFrom(field: "feeRecipient")
+#    feesRecieved: [BigInt]
+    cancelled: [CancelledOrder!] @derivedFrom(field: "maker")
     proxiesApproved: [Bytes] # must be updated in same mapping as ProxyApprovedAddresses
     validatorsApproved: [Bytes] # event SignatureValidationApproval - allows me to give any other address the ability to sign for me
 #   openOrders: [Bytes] can't get this without hitting off chain data
 }
 
-# This is based on the relayer being likely to recieve all fees.
-type Relayer @entity {
-    id: ID! # ethereum account where relayer recieves fees
-    FilledOrders: [FilledOrders!] @derivedFrom(field: "relayer")
-#   feesRecieved: [BigInt] # must add together maker and Taker fees. I don't really need this, it is duplicate data. TODO: remove
-#   openOrders: [Bytes] can't get this without hitting off chain data
-}
-
-# this should show fees and assets traded
-# FIXME: This shouldnt be pluralized
-
-type FilledOrders @entity {
+type FilledOrder @entity {
     maker: Bytes!
     feeRecipient: Bytes # it is likely to be the relayer, but the relayer could also change their address that recievies fees
     taker: Bytes!
@@ -29,38 +20,50 @@ type FilledOrders @entity {
     makerFeePaid: BigInt # I think this goes to relayer, in general
     takerFeePaid: BigInt # I think this goes to relayer, in general
     id: ID! # orderHash (unqiue because of the salt)
-    makerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id
+    makerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id # TODO: change to human readable (coin & token id)
     takerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id
-    user: User!
-    relayer: Relayer!
+    user: User
+#    relayer: Relayer!
 }
 
-# FIXME: This shouldnt be pluralized
-type CancelledOrders @entity {
-    maker: Bytes!
+#type FilledMakerOrder @entity {
+#    id: ID!
+#    maker: Bytes!
+#}
+
+type CancelledOrder @entity {
+    maker: Bytes # some reason this cancels on null
     feeRecipient: Bytes
     sender: Bytes!
     id: ID! # orderHash
-    makerAsserData: Bytes!
+    makerAssetData: Bytes!
     takerAssetData: Bytes!
-    user: User!
-}
-
-# event AuthorizedAddressAdded - whenever someone gives proxy approval to tranfer for them
-# event AuthorizedAddressRemoved - removing proxy to transfer for you
-# FIXME: This shouldnt be pluralized
-type ProxyApprovedAddresses @entity {
-    id: ID! # proxy address i.e. ERC721 or ERC20 proxy addresses
-    approvedAddresses: [Bytes]!
 }
 
 # event AssetProxyRegister - I believe this should be only be emitted twice as of right now, just ERC20 and ERC721 asset
-# FIXME: This shouldnt be pluralized
-type ApprovedProxyAddresses @entity {
+# THIS CAN PROBABLY BE REMOVED , it will BE STORED IN THE ABOVE ENTITY
+type ApprovedProxy @entity {
     id: ID! # id field
     assetProxyAddress: Bytes!
 }
 
+
+# This is based on the relayer being likely to recieve all fees.
+# YOU CUOLD SAY THIS IS NO DIFFERENT FROM A USER. it really is . TODO: REMOVE
+#type Relayer @entity {
+#    id: ID! # ethereum account where relayer recieves fees
+#    FilledOrders: [FilledOrders!] @derivedFrom(field: "relayer")
+##   feesRecieved: [BigInt] # must add together maker and Taker fees. I don't really need this, it is duplicate data. TODO: remove
+##   openOrders: [Bytes] can't get this without hitting off chain data
+#}
+
+# event AuthorizedAddressAdded - whenever someone gives proxy approval to tranfer for them
+# event AuthorizedAddressRemoved - removing proxy to transfer for you
+# THIS CAN BE REMOVED, AS WE CAN SEARCH THIS BY QUERYING USERS and seeing which proxies they have approved
+#type ProxyUsers @entity {
+#    id: ID! # proxy address i.e. ERC721 or ERC20 proxy addresses
+#    approvedAddresses: [Bytes]!
+#}
 
 # THERE IS NO ID FOR THIS, it isnt needed. It will cancelOrders, and a cancel order event will be released as a result
 # you could actually hash maker and sender together, and note their order epoch that is cancelled up to, if that is desirable . But I don't see the point now
@@ -70,13 +73,11 @@ type ApprovedProxyAddresses @entity {
 #    orderEpoch: BigInt!
 #}
 
-
-
 # commented out, takes too long, and not that useful
 #type ZRXTokenOwner @entity {
 #    id: ID! # owner
 #    amount: BigInt!
-#    allowance: [AllowanceApproval!] @derivedFrom(field: "tokenOwner")
+#    allowance: [AllowanceApproval!] @derivedFrom(field: "tokenOwner") # not linking up!
 #}
 #
 #type AllowanceApproval @entity {

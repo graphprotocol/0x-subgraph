@@ -12,7 +12,10 @@ dataSources:
     apiVersion: 0.0.1
     language: wasm/assemblyscript
     entities:
-    - axxxxxx
+    - User
+#    - Relayer
+    - FilledOrder
+    - CancelledOrder
     abis:
     - name: ExchangeV2
       file: ./abis/ExchangeV2.json
@@ -20,9 +23,9 @@ dataSources:
     - event: Fill(address,address,address,address,uint256,uint256,uint256,uint256,bytes32,bytes,bytes) # From MExchangeCore.sol
       handler: handleFill
     - event: Cancel(address,address,address,bytes32,bytes,bytes) # From MExchangeCore.sol
-      handler: handleCancle
-    - event: CancelUpTo(address,address,uint256) # From MExchangeCore.sol
-      handler: handleCancleUpTo
+      handler: handleCancel
+#    - event: CancelUpTo(address,address,uint256) # From MExchangeCore.sol
+#      handler: handleCancleUpTo
     - event: AssetProxyRegistered(bytes4,address) # From MAssetProxyDispatcher.sol
       handler: handleAssetProxyRegistered
     - event: SignatureValidatorApproval(address,address,bool) # From MSignatureValidator.sol
@@ -38,7 +41,8 @@ dataSources:
     apiVersion: 0.0.1
     language: wasm/assemblyscript
     entities:
-    - axxxxxx
+#    - ProxyUsers
+    - Users
     abis:
     - name: ERC20ProxyV2
       file: ./abis/ERC20ProxyV2.json
@@ -58,7 +62,8 @@ dataSources:
     apiVersion: 0.0.1
     language: wasm/assemblyscript
     entities:
-    - axxxxxx
+#    - ProxyUsers
+    - Users
     abis:
     - name: ERC721ProxyV2
       file: ./abis/ERC721ProxyV2.json

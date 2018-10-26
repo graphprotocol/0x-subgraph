@@ -4,7 +4,21 @@ This is a subgraph for the [0x Protocol](https://github.com/0xProject).
 
 This requires the following (TODO: number of contracts) contracts to be ingested by the subgraph, with the events that were sourced to be stored in the subgraph database:
 
-TODO: list contracts and events 
+* Exchange.sol / MExchangeCore.sol
+    * event Fill
+    * event Cancel
+* MixinAssetProxyDispatcher.sol / MAssetProxyDispatcher.sol
+    * event AssetProxyRegistered
+* MixinSignatureValidator.sol / MSignatureValidator
+    * event SignatureValidatorApproval
+* MixinAuthorizable.sol / MAuthorizable.sol
+    * event AuthorizedAddressAdded
+    * event AuthorizedAddressRemoved
+
+Events Not Included
+
+* Exchange.sol / MExchangeCore.sol
+    * event CancelUpTo - It would not be very useful and it will emit the Cancel events for all orders that get cancelled 
 
 This can be used for the Kovan, Ropsten and Mainnet contracts. In order to do
 so the `subgraph.yaml` file will need to have the contract addresses changed to point to the 
