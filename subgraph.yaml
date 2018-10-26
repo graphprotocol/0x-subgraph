@@ -13,9 +13,9 @@ dataSources:
     language: wasm/assemblyscript
     entities:
     - User
-#    - Relayer
     - FilledOrder
     - CancelledOrder
+    - ApprovedProxy
     abis:
     - name: ExchangeV2
       file: ./abis/ExchangeV2.json

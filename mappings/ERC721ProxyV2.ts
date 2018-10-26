@@ -8,22 +8,8 @@ import { Entity, store, Value } from '@graphprotocol/graph-ts'
 
 import {AuthorizedAddressAdded, AuthorizedAddressRemoved} from '../types/ERC721ProxyV2/ERC721ProxyV2'
 
+// TODO: I dont think this does what I think it is supposed to, it only registers the exchange address twice, under the contract they launched all the 0x contracts from. And yes, each comes from erc20 and ecr721 calling, so I need to figure out what this really is
 export function handleAdded(event: AuthorizedAddressAdded): void {
-  // let proxyID = event.params.target.toHex()
-  // let assetProxy = store.get("ProxyUsers", proxyID)
-  //
-  // if (assetProxy == null){
-  //   assetProxy = new Entity()
-  //   assetProxy.setString('id', proxyID)
-  //   assetProxy.setArray('approvedAddresses', new Array<Value>())
-  // }
-  //
-  // // is this a good design? could be an array in the length of 1000's
-  // let approved = assetProxy.getArray('approvedAddresses')
-  // approved.push(Value.fromAddress((event.params.caller)))
-  //
-  // store.set('ProxyUsers', proxyID, assetProxy as Entity)
-
   let userID = event.params.caller.toHex()
   let user = store.get("User", userID)
 
@@ -45,7 +31,7 @@ export function handleAdded(event: AuthorizedAddressAdded): void {
 }
 
 
-
+// TODO: This is never called, because it is described as above
 export function handleRemoved(event: AuthorizedAddressRemoved): void {
 
   // how to remove ? what func do we have
