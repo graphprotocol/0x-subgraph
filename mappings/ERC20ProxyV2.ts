@@ -3,55 +3,43 @@
 import 'allocator/arena'
 export { allocate_memory }
 
-// Import types and APIs from graph-ts
-import { Entity, store, Value } from '@graphprotocol/graph-ts'
+// Import APIs from graph-ts
+import { store } from '@graphprotocol/graph-ts'
 
-import {AuthorizedAddressAdded, AuthorizedAddressRemoved} from '../types/ERC20ProxyV2/ERC20ProxyV2'
 
+// Import event types from the registrar contract ABI
+import {AuthorizedAddressAdded, AuthorizedAddressRemoved} from '../types/ERC721ProxyV2/ERC721ProxyV2'
+
+// Import entity types from the schema
+import {User} from '../types/schema'
+
+// TODO: I dont think this does what I think it is supposed to, it only registers the exchange address twice, under the contract they launched all the 0x contracts from. And yes, each comes from erc20 and ecr721 calling, so I need to figure out what this really is
 export function handleAdded(event: AuthorizedAddressAdded): void {
-  // let proxyID = event.params.target.toHex()
-  // let assetProxy = store.get("ProxyUsers", proxyID)
-  //
-  // if (assetProxy == null){
-  //   assetProxy = new Entity()
-  //   assetProxy.setString('id', proxyID)
-  //   assetProxy.setArray('approvedAddresses', new Array<Value>())
-  // }
-  //
-  // // is this a good design? could be an array in the length of 1000's
-  // let approved = assetProxy.getArray('approvedAddresses')
-  // approved.push(Value.fromAddress((event.params.caller)))
-  //
-  // store.set('ProxyUsers', proxyID, assetProxy as Entity)
-
-  let userID = event.params.caller.toHex()
-  let user = store.get("User", userID)
+  let id = event.params.caller.toHex()
+  let user = store.get("User", id) as User | null
 
   if (user == null) {
-    user = new Entity()
-    user.setString('id', userID)
-    user.setArray('proxiesApproved', new Array<Value>())
+    user = new User()
+    user.proxiesApproved = []
   }
 
-  //this != is supposed to prevent double from showing up in proxiesApproved
+  //this != is supposed to prevent double from showing up in proxiesApproved - DONT THINK THIS IS ACTUALLY NEEDED !
   // or maybe the event is allowed to happen twice? or maybe it got added, removed , and added . huh
-  // so handleRemove should filter that out
   if (user != null) {
-    let proxies = user.getArray('proxiesApproved')
-    proxies.push(Value.fromAddress((event.params.target)))
+    let proxies = user.proxiesApproved
+    proxies.push(event.params.target)
   }
 
-  store.set('User', userID, user as Entity)
+  store.set('User', id, user as User)
 
 }
 
 
-
+// TODO: This is never called, because it is described as above. It either pushes or pops, and i need to look at typescirpt types
 export function handleRemoved(event: AuthorizedAddressRemoved): void {
 
   // how to remove ? what func do we have
 
   // SEE POP AND FILTER - assembly script
-
 
 }

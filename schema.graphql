@@ -4,8 +4,8 @@ type User @entity {
     filledOrdersTaker: [FilledOrder!] @derivedFrom(field: "taker")
     filledOrdersFeeRecipient: [FilledOrder!] @derivedFrom(field: "feeRecipient")
     cancelled: [CancelledOrder!] @derivedFrom(field: "maker")
-    proxiesApproved: [Bytes] # must be updated in same mapping as ProxyApprovedAddresses
-    validatorsApproved: [Bytes] # event SignatureValidationApproval - allows me to give any other address the ability to sign for me
+    proxiesApproved: [Bytes!] # must be updated in same mapping as ProxyApprovedAddresses # TODO: why are these all null?
+    validatorsApproved: [Bytes!] # event SignatureValidationApproval - allows me to give any other address the ability to sign for me # TODO: why are these all null?
 }
 
 type FilledOrder @entity {
@@ -47,17 +47,3 @@ type ApprovedProxy @entity {
 #    orderEpoch: BigInt!
 #}
 
-# commented out, takes too long, and not that useful
-#type ZRXTokenOwner @entity {
-#    id: ID! # owner
-#    amount: BigInt!
-#    allowance: [AllowanceApproval!] @derivedFrom(field: "tokenOwner") # not linking up!
-#}
-
-#type AllowanceApproval @entity {
-#    id: ID! # owner
-#    approvedAddress: Bytes!
-#    amount: BigInt!
-#    tokenOwner: ZRXTokenOwner!
-#
-#}

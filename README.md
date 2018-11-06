@@ -98,8 +98,65 @@ The query below shows all the information that is possible to query, but is limi
 
 ```
 {
-TODO: add in queries 
+  users(first: 5){
+    id
+    proxiesApproved
+    filledOrdersMaker{
+      id
+      maker
+      makerFeePaid
+      makerAssetData
+      makerAssetFilledAmount
+      taker
+      takerFeePaid
+      takerAssetData
+      takerAssetFilledAmount
+      sender
+      feeRecipient
+    }
+    filledOrdersTaker{
+      id
+      maker
+      makerFeePaid
+      makerAssetData
+      makerAssetFilledAmount
+      taker
+      takerFeePaid
+      takerAssetData
+      takerAssetFilledAmount
+      sender
+      feeRecipient    
+    }
+    filledOrdersFeeRecipient{
+      id
+      maker
+      makerFeePaid
+      makerAssetData
+      makerAssetFilledAmount
+      taker
+      takerFeePaid
+      takerAssetData
+      takerAssetFilledAmount
+      sender
+      feeRecipient    
+    }
+    validatorsApproved
+    cancelled{
+      id
+      maker
+      makerAssetData
+      takerAssetData
+      feeRecipient
+      sender
+    }
+  }
+  approvedProxies{
+    id
+    assetProxyAddress
+  }
 }
+
+
 ```
 The command above can be copy pasted into the Graphiql interface in your browser at `127.0.0.1:8000`.
 

@@ -41,8 +41,7 @@ dataSources:
     apiVersion: 0.0.1
     language: wasm/assemblyscript
     entities:
-#    - ProxyUsers
-    - Users
+    - User
     abis:
     - name: ERC20ProxyV2
       file: ./abis/ERC20ProxyV2.json
@@ -62,8 +61,7 @@ dataSources:
     apiVersion: 0.0.1
     language: wasm/assemblyscript
     entities:
-#    - ProxyUsers
-    - Users
+    - User
     abis:
     - name: ERC721ProxyV2
       file: ./abis/ERC721ProxyV2.json
@@ -73,24 +71,3 @@ dataSources:
     - event: AuthorizedAddressRemoved(address,address) # From MAuthorizable.sol
       handler: handleRemoved
     file: ./mappings/ERC721ProxyV2.ts
-#- kind: ethereum/contract
-#  name: ZRXToken
-#  source:
-#    address: "0xe41d2489571d322189246dafa5ebde1f4699f498" # Mainnet: 0xe41d2489571d322189246dafa5ebde1f4699f498 (1 version)
-#    abi: ZRXToken
-#  mapping:
-#    kind: ethereum/events
-#    apiVersion: 0.0.1
-#    language: wasm/assemblyscript
-#    entities:
-#    - ZRXTokenOwner
-#    - AllowanceApproval
-#    abis:
-#    - name: ZRXToken
-#      file: ./abis/ZRXToken.json
-#    eventHandlers:
-#        - event: Transfer(address,address,uint256)  #commenting out for now, because it is so slow
-#          handler: handleTransfer
-#        - event: Approval(address,address,uint256)  #commenting out for now, because it is so slow
-#          handler: handleAllowanceApproval
-#    file: ./mappings/ZRXToken.ts

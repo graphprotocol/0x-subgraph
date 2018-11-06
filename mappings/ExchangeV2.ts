@@ -2,32 +2,36 @@ import 'allocator/arena'
 import {AuthorizedAddressRemoved} from "../types/ERC721ProxyV2/ERC721ProxyV2";
 export { allocate_memory }
 
-import { Entity, store, Value } from '@graphprotocol/graph-ts'
+// Import APIs from graph-ts
+import { store } from '@graphprotocol/graph-ts'
+
+// Import event types from the registrar contract ABI
 import {Fill, Cancel, CancelUpTo, AssetProxyRegistered, SignatureValidatorApproval} from '../types/ExchangeV2/ExchangeV2'
+
+// Import entity types from the schema
+import {CancelledOrder, FilledOrder, User, ApprovedProxy} from '../types/schema'
 
 // Works right now
 export function handleFill(event: Fill): void {
   let id = event.params.orderHash.toHex()
-  let order = new Entity()
+  let order = new FilledOrder()
 
-  order.setString('id', id)
-  order.setAddress('maker', event.params.makerAddress)
-  order.setAddress('feeRecipient', event.params.feeRecipientAddress)
-  order.setAddress('taker', event.params.takerAddress)
-  order.setAddress('sender', event.params.senderAddress)
-  order.setU256('makerAssetFilledAmount', event.params.makerAssetFilledAmount)
-  order.setU256('takerAssetFilledAmount', event.params.takerAssetFilledAmount)
-  order.setU256('makerFeePaid', event.params.makerFeePaid)
-  order.setU256('takerFeePaid', event.params.takerFeePaid)
-  order.setBytes('makerAssetData', event.params.makerAssetData)
-  order.setBytes('takerAssetData', event.params.takerAssetData)
-  order.setString('user', id)
+  order.maker = event.params.makerAddress
+  order.feeRecipient = event.params.feeRecipientAddress
+  order.taker = event.params.takerAddress
+  order.sender = event.params.senderAddress
+  order.makerAssetFilledAmount = event.params.makerAssetFilledAmount
+  order.takerAssetFilledAmount = event.params.takerAssetFilledAmount
+  order.makerFeePaid = event.params.makerFeePaid
+  order.takerFeePaid = event.params.takerFeePaid
+  order.makerAssetData = event.params.makerAssetData
+  order.takerAssetData =  event.params.takerAssetData
 
   store.set('FilledOrder', id, order)
 
-  let maker = new Entity()
-  let taker = new Entity()
-  let feeRecipient = new Entity()
+  let maker = new User()
+  let taker = new User()
+  let feeRecipient = new User()
 
   let makerID = event.params.makerAddress.toHex()
   let takerID = event.params.takerAddress.toHex()
@@ -41,33 +45,31 @@ export function handleFill(event: Fill): void {
 // Works
 export function handleCancel(event: Cancel): void {
   let id = event.params.orderHash.toHex()
-  let cancelledOrder = store.get("CancelledOrder", id)
+  let cancelledOrder = store.get("CancelledOrder", id) as CancelledOrder | null
 
   if (cancelledOrder == null) {
-    let cancelledOrder = new Entity()
-    cancelledOrder.setString("id", id)
+    cancelledOrder = new CancelledOrder()
   }
 
-  cancelledOrder.setAddress('maker', event.params.makerAddress)
-  cancelledOrder.setAddress('feeRecipient', event.params.feeRecipientAddress)
-  cancelledOrder.setAddress('sender', event.params.senderAddress)
-  cancelledOrder.setBytes('makerAssetData', event.params.makerAssetData)
-  cancelledOrder.setBytes('takerAssetData', event.params.takerAssetData)
-  store.set('CancelledOrder', id, cancelledOrder as Entity)
+  cancelledOrder.maker = event.params.makerAddress
+  cancelledOrder.feeRecipient = event.params.feeRecipientAddress
+  cancelledOrder.sender = event.params.senderAddress
+  cancelledOrder.makerAssetData = event.params.makerAssetData
+  cancelledOrder.takerAssetData = event.params.takerAssetData
+  store.set('CancelledOrder', id, cancelledOrder as CancelledOrder)
 
-  let user = new Entity()
+  let user = new User()
   let userid = event.params.makerAddress.toHex()
-  store.set("User", userid, user as Entity)
+  store.set("User", userid, user)
 
 }
 
-// Handles registration of ERC720 and ERC20 proxy contracts. Only 2 events 
+// Handles registration of ERC720 and ERC20 proxy contracts. Only 2 events
 // Works 100%
 export function handleAssetProxyRegistered(event: AssetProxyRegistered): void {
   let id = event.params.id.toHex()
-  let proxy = new Entity()
-  proxy.setString("id", id)
-  proxy.setAddress("assetProxyAddress", event.params.assetProxy)
+  let proxy = new ApprovedProxy()
+  proxy.assetProxyAddress = event.params.assetProxy
   store.set("ApprovedProxy", id, proxy)
 }
 
@@ -75,17 +77,16 @@ export function handleAssetProxyRegistered(event: AssetProxyRegistered): void {
 //NOTE - this event appears to never get emitted. TODO: Double check when I run through V1 of the contracts
 export function handleSignatureValidatorApproval(event: SignatureValidatorApproval): void {
   let id = event.params.signerAddress.toHex()
-  let user = store.get("User", id)
+  let user = store.get("User", id) as User | null
 
   if (user == null) {
-    user = new Entity()
-    user.setString('id', id)
-    user.setArray('validatorsApproved', new Array<Value>())
+    user = new User()
+    user.validatorsApproved = []
   }
 
-  let proxies = user.getArray('proxiesApproved')
-  proxies.push(Value.fromAddress(event.params.validatorAddress))
-  store.set('User', id, user as Entity)
+  let proxies = user.proxiesApproved
+  proxies.push(event.params.validatorAddress)
+  store.set('User', id, user as User)
 
 }
 
