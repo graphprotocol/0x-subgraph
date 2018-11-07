@@ -32,13 +32,13 @@ type CancelledOrder @entity {
 }
 
 # event AssetProxyRegister
-# TODO: Decide if we should remove this, it only has two events, it's not that special
-type ApprovedProxy @entity {
-    id: ID! # id field
-    assetProxyAddress: Bytes!
-    caller: Bytes
-    target: Bytes
-}
+# TODO: REMOVE - there is little point to tracking the two events this emits
+#type ApprovedProxy @entity {
+#    id: ID! # id field
+#    assetProxyAddress: Bytes!
+#    caller: Bytes
+#    target: Bytes
+#}
 
 
 
