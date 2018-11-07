@@ -13,33 +13,29 @@ import {AuthorizedAddressAdded, AuthorizedAddressRemoved} from '../types/ERC721P
 // Import entity types from the schema
 import {User} from '../types/schema'
 
-// TODO: I dont think this does what I think it is supposed to, it only registers the exchange address twice, under the contract they launched all the 0x contracts from. And yes, each comes from erc20 and ecr721 calling, so I need to figure out what this really is
+// all this does is take the contract launch address of 0x (0x2d7dc2ef7c6f6a2cbc3dba4db97b2ddb40e20713) as caller, and the 0x Exchange contract (0x4f833a24e1f95d70f028921e27040ca56e09ab0b) as target
+// so ultimately this just records: Authorizing/unauthorizing Exchange contract addresses from calling the transfer methods on this AssetProxy
+// But there is no way to link this back to the specific proxy contract. and it only gets emitted twice in all the blocks. It isn't useful to the subgraph, so commenting out
+
 export function handleAdded(event: AuthorizedAddressAdded): void {
-  let id = event.params.caller.toHex()
-  let user = store.get("User", id) as User | null
-
-  if (user == null) {
-    user = new User()
-    user.proxiesApproved = []
-  }
-
-  //this != is supposed to prevent double from showing up in proxiesApproved - DONT THINK THIS IS ACTUALLY NEEDED !
-  // or maybe the event is allowed to happen twice? or maybe it got added, removed , and added . huh
-  if (user != null) {
-    let proxies = user.proxiesApproved
-    proxies.push(event.params.target)
-  }
-
-  store.set('User', id, user as User)
+  // let id = event.params.caller.toHex()
+  // let user = store.get("User", id) as User | null
+  //
+  // if (user == null) {
+  //   user = new User()
+  //   user.proxiesApproved = []
+  // }
+  //
+  // if (user != null) {
+  //   let proxies = user.proxiesApproved
+  //   proxies.push(event.params.target)
+  //   user.proxiesApproved = proxies
+  // }
+  //
+  // store.set('User', id, user as User)
 
 }
 
 
-// TODO: This is never called, because it is described as above. It either pushes or pops, and i need to look at typescirpt types
 export function handleRemoved(event: AuthorizedAddressRemoved): void {
-
-  // how to remove ? what func do we have
-
-  // SEE POP AND FILTER - assembly script
-
 }

@@ -4,7 +4,6 @@ type User @entity {
     filledOrdersTaker: [FilledOrder!] @derivedFrom(field: "taker")
     filledOrdersFeeRecipient: [FilledOrder!] @derivedFrom(field: "feeRecipient")
     cancelled: [CancelledOrder!] @derivedFrom(field: "maker")
-    proxiesApproved: [Bytes!] # must be updated in same mapping as ProxyApprovedAddresses # TODO: why are these all null?
     validatorsApproved: [Bytes!] # event SignatureValidationApproval - allows me to give any other address the ability to sign for me # TODO: why are these all null?
 }
 
@@ -20,6 +19,7 @@ type FilledOrder @entity {
     id: ID! # orderHash (unqiue because of the salt)
     makerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id # TODO: change to human readable (coin & token id)
     takerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id
+    version: Int!
 }
 
 type CancelledOrder @entity {
@@ -36,7 +36,11 @@ type CancelledOrder @entity {
 type ApprovedProxy @entity {
     id: ID! # id field
     assetProxyAddress: Bytes!
+    caller: Bytes
+    target: Bytes
 }
+
+
 
 
 # THERE IS NO ID FOR THIS, it isnt needed. It will cancelOrders, and a cancel order event will be released as a result

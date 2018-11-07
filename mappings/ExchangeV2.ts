@@ -26,6 +26,7 @@ export function handleFill(event: Fill): void {
   order.takerFeePaid = event.params.takerFeePaid
   order.makerAssetData = event.params.makerAssetData
   order.takerAssetData =  event.params.takerAssetData
+  order.version = 2
 
   store.set('FilledOrder', id, order)
 

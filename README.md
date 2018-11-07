@@ -19,6 +19,18 @@ Events Not Included
 
 * Exchange.sol / MExchangeCore.sol
     * event CancelUpTo - It would not be very useful and it will emit the Cancel events for all orders that get cancelled 
+                                                                                              
+Contracts Not Included
+* TokenRegistry.sol (v1)
+    * This is not included because it was removed after v1, since 0x could not keep up with the tokens being add
+* TokenTransferProxy.sol (v1)
+    * This was not included because it just authorizes the Exchange contract, and only gets emitted once
+* ERC20Proxy.sol (v2)
+    * This was not included because it just authorizes the Exchange contract, and only gets emitted once
+* ERC721Proxy.sol (v2)
+    * This was not included because it just authorizes the Exchange contract, and only gets emitted once
+
+
 
 This can be used for the Kovan, Ropsten and Mainnet contracts. In order to do
 so the `subgraph.yaml` file will need to have the contract addresses changed to point to the 
