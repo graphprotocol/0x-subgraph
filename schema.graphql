@@ -7,32 +7,43 @@ type User @entity {
     validatorsApproved: [Bytes!] # event SignatureValidationApproval - allows me to give any other address the ability to sign for me # TODO: why are these all null?
 }
 
+# note, V2 means the field is only in the V2 contract, and the same for V1
+# makerAssetFilledAmountV2 and makerTokenAddrV1 are similar, but V2 is updated to support ERC721, and that is why the change exists
+# note the events that are used to fill these are named differently, so mappings need to reflect this
 type FilledOrder @entity {
     maker: Bytes!
-    feeRecipient: Bytes # it is likely to be the relayer, but the relayer could also change their address that recievies fees
+    feeRecipient: Bytes! # it is likely to be the relayer, but the relayer could also change their address that recievies fees
     taker: Bytes!
-    sender: Bytes! # is this the relayer, or m or t, or 3rd party? figure out when query
-    makerAssetFilledAmount: BigInt
-    takerAssetFilledAmount: BigInt
-    makerFeePaid: BigInt # I think this goes to relayer, in general
-    takerFeePaid: BigInt # I think this goes to relayer, in general
+    makerFeePaid: BigInt! # I think this goes to relayer, in general
+    takerFeePaid: BigInt! # I think this goes to relayer, in general
     id: ID! # orderHash (unqiue because of the salt)
-    makerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id # TODO: change to human readable (coin & token id)
-    takerAssetData: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id
-    version: Int!
+    makerAssetFilledAmount: BigInt!
+    takerAssetFilledAmount: BigInt!
+    makerAssetDataV2: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id # TODO: change to human readable (coin & token id)
+    takerAssetDataV2: Bytes # a special hash of ERC20 / ERC721 + the address. basically just the addr, and if it is ERC721 it also has the token id
+    senderV2: Bytes # is this the relayer, or m or t, or 3rd party? figure out when query
+    tokensV1: Bytes
+    makerTokenAddrV1: Bytes
+    takerTokenAddrV1: Bytes
 }
 
 type CancelledOrder @entity {
-    maker: Bytes # some reason this cancels on null
-    feeRecipient: Bytes
-    sender: Bytes!
+    maker: Bytes! # some reason this cancels on null
+    feeRecipient: Bytes!
     id: ID! # orderHash
-    makerAssetData: Bytes!
-    takerAssetData: Bytes!
+    makerAssetDataV2: Bytes
+    takerAssetDataV2: Bytes
+    senderV2: Bytes
+    makerTokenAddrV1: Bytes
+    takerTokenAddrV1: Bytes
+    makerTokenAmountV1: BigInt
+    takerTokenAmountV1: BigInt
+    tokensV1: Bytes
+
 }
 
 # event AssetProxyRegister
-# TODO: REMOVE - there is little point to tracking the two events this emits
+## TODO: REMOVE - there is little point to tracking the two events this emits
 #type ApprovedProxy @entity {
 #    id: ID! # id field
 #    assetProxyAddress: Bytes!

@@ -5,7 +5,7 @@ dataSources:
 - kind: ethereum/contract
   name: ExchangeV2
   source:
-    address: "0x4f833a24e1f95d70f028921e27040ca56e09ab0b" # Mainnet 2.0: 0x4f833a24e1f95d70f028921e27040ca56e09ab0b
+    address: "0x4f833a24e1f95d70f028921e27040ca56e09ab0b" # Mainnet 2.0: 0x4f833a24e1f95d70f028921e27040ca56e09ab0b # Ropsten 2.0 : 0x4530c0483a1633c7a1c97d2c53721caff2caaaaf # Kovan 2.0 0x35dd2932454449b14cee11a94d3674a936d5d7b2
     abi: ExchangeV2
   mapping:
     kind: ethereum/events
@@ -15,7 +15,7 @@ dataSources:
     - User
     - FilledOrder
     - CancelledOrder
-    - ApprovedProxy
+#    - ApprovedProxy
     abis:
     - name: ExchangeV2
       file: ./abis/ExchangeV2.json
@@ -26,8 +26,30 @@ dataSources:
       handler: handleCancel
 #    - event: CancelUpTo(address,address,uint256) # From MExchangeCore.sol
 #      handler: handleCancleUpTo
-    - event: AssetProxyRegistered(bytes4,address) # From MAssetProxyDispatcher.sol
-      handler: handleAssetProxyRegistered
+#    - event: AssetProxyRegistered(bytes4,address) # From MAssetProxyDispatcher.sol
+#      handler: handleAssetProxyRegistered
     - event: SignatureValidatorApproval(address,address,bool) # From MSignatureValidator.sol
       handler: handleSignatureValidatorApproval
     file: ./mappings/ExchangeV2.ts
+- kind: ethereum/contract
+  name: ExchangeV1
+  source:
+    address: "0x12459c951127e0c374ff9105dda097662a027093" # Mainnet 1.0: 0x12459c951127e0c374ff9105dda097662a027093 # Ropsten 1.0 : 0x479cc461fecd078f766ecc58533d6f69580cf3ac # Kovan 1.0 0x90fe2af704b34e0224bf2299c838e04d4dcf1364
+    abi: ExchangeV1
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.1
+    language: wasm/assemblyscript
+    entities:
+    - User
+    - FilledOrder
+    - CancelledOrder
+    abis:
+    - name: ExchangeV1
+      file: ./abis/ExchangeV1.json
+    eventHandlers:
+    - event: LogFill(address,address,address,address,address,uint256,uint256,uint256,uint256,bytes32,bytes32)
+      handler: handleLogFill
+    - event: LogCancel(address,address,address,address,uint256,uint256,bytes32,bytes32)
+      handler: handleLogCancel
+    file: ./mappings/ExchangeV1.ts

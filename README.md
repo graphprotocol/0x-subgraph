@@ -12,8 +12,6 @@ This requires the following (TODO: number of contracts) contracts to be ingested
 * MixinSignatureValidator.sol / MSignatureValidator
     * event SignatureValidatorApproval
 * Exchange.sol (v1)
-    * event LogAuthorizedAddressAdded
-    * event LogauthorizedAddressRemoved
     * event LogCancel
     * event LogFill
 
@@ -22,8 +20,10 @@ Events Not Included
 * Exchange.sol / MExchangeCore.sol (v2)
     * event CancelUpTo - It would not be very useful and it will emit the Cancel events for all orders that get cancelled
 * Exchange.sol (v1)
-    * event LogError - No use in tracking this anymore, with solidity error messages added 
-                                                                                              
+    * event LogError - No use in tracking this anymore, with solidity error messages added
+    * event LogAuthorizedAddressAdded - Just emitted once to authorize Exchange contract  
+    * event LogAuthorizedAddressRemoved - Just emitted once to authorize Exchange contract                            
+                                                                   
 Contracts Not Included
 * TokenRegistry.sol (v1)
     * This is not included because it was removed after v1, since 0x could not keep up with the tokens being add
@@ -39,6 +39,8 @@ All of the other contracts don't emit events that are relevant.
 This can be used for the Kovan, Ropsten and Mainnet contracts. In order to do
 so the `subgraph.yaml` file will need to have the contract addresses changed to point to the 
 correct address for each respective network.
+
+Expect the subgraph to take ~10 hours to ingest all the events when connected to infura for mainnet
 
 ## Brief Description of The Graph Node Setup
 
@@ -114,59 +116,86 @@ The query below shows all the information that is possible to query, but is limi
 
 ```
 {
-  users(first: 5){
+  users(first: 5) {
     id
-    proxiesApproved
-    filledOrdersMaker{
+    validatorsApproved
+    filledOrdersMaker {
       id
       maker
       makerFeePaid
-      makerAssetData
+      makerAssetDataV2
       makerAssetFilledAmount
       taker
       takerFeePaid
-      takerAssetData
+      takerAssetDataV2
       takerAssetFilledAmount
-      sender
+      senderV2
       feeRecipient
+      tokensV1
+      makerTokenAddrV1
+      takerTokenAddrV1
     }
-    filledOrdersTaker{
+    filledOrdersTaker {
       id
       maker
       makerFeePaid
-      makerAssetData
+      makerAssetDataV2
       makerAssetFilledAmount
       taker
       takerFeePaid
-      takerAssetData
+      takerAssetDataV2
       takerAssetFilledAmount
-      sender
-      feeRecipient    
+      senderV2
+      feeRecipient
+      tokensV1
+      makerTokenAddrV1
+      takerTokenAddrV1
     }
-    filledOrdersFeeRecipient{
+    filledOrdersFeeRecipient {
       id
       maker
       makerFeePaid
-      makerAssetData
+      makerAssetDataV2
       makerAssetFilledAmount
       taker
       takerFeePaid
-      takerAssetData
+      takerAssetDataV2
       takerAssetFilledAmount
-      sender
-      feeRecipient    
+      senderV2
+      feeRecipient
+      tokensV1
+      makerTokenAddrV1
+      takerTokenAddrV1
     }
     validatorsApproved
-    cancelled{
+    cancelled {
       id
       maker
-      makerAssetData
-      takerAssetData
+      makerAssetDataV2
+      takerAssetDataV2
       feeRecipient
-      sender
+      senderV2
+      makerTokenAddrV1
+      takerTokenAddrV1
+      makerTokenAmountV1
+      takerTokenAmountV1
+      tokensV1
     }
   }
-  approvedProxies{
+  cancelledOrders(first: 5) {
+    id
+    maker
+    makerAssetDataV2
+    takerAssetDataV2
+    feeRecipient
+    senderV2
+    makerTokenAddrV1
+    takerTokenAddrV1
+    makerTokenAmountV1
+    takerTokenAmountV1
+    tokensV1
+  }
+  approvedProxies {
     id
     assetProxyAddress
   }
