@@ -64,7 +64,7 @@ export function handleCancel(event: Cancel): void {
 }
 
 // NOTE - this event appears to never get emitted. Possibly a feature that no one uses in the protocol
-// NOTE - haven't been able to test the logic, because this event never gets emitted
+// NOTE - haven't been able to test the logic, because this event never gets emitted. It might crash the subgraph if there is an error in splice and indexOf ussage
 export function handleSignatureValidatorApproval(event: SignatureValidatorApproval): void {
   let id = event.params.signerAddress.toHex()
   let user = store.get("User", id) as User | null
