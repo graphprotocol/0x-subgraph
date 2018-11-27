@@ -1,9 +1,3 @@
-import 'allocator/arena'
-export { allocate_memory }
-
-// Import APIs from graph-ts
-import { store } from '@graphprotocol/graph-ts'
-
 // Import event types from the registrar contract ABI
 import {Fill, Cancel, SignatureValidatorApproval} from '../types/ExchangeV2/ExchangeV2'
 
@@ -13,8 +7,7 @@ import {CancelledOrder, FilledOrder, User} from '../types/schema'
 // Works right now
 export function handleFill(event: Fill): void {
   let id = event.params.orderHash.toHex()
-  let order = new FilledOrder()
-
+  let order = new FilledOrder(id)
   order.maker = event.params.makerAddress
   order.feeRecipient = event.params.feeRecipientAddress
   order.taker = event.params.takerAddress
@@ -25,29 +18,28 @@ export function handleFill(event: Fill): void {
   order.takerFeePaid = event.params.takerFeePaid
   order.makerAssetDataV2 = event.params.makerAssetData
   order.takerAssetDataV2 =  event.params.takerAssetData
-
-  store.set('FilledOrder', id, order)
-
-  let maker = new User()
-  let taker = new User()
-  let feeRecipient = new User()
+  order.save()
 
   let makerID = event.params.makerAddress.toHex()
-  let takerID = event.params.takerAddress.toHex()
-  let feeRecipientID = event.params.feeRecipientAddress.toHex()
+  let maker = new User(makerID)
+  maker.save()
 
-  store.set("User", makerID, maker)
-  store.set("User", takerID, taker)
-  store.set("User", feeRecipientID, feeRecipient)
+  let takerID = event.params.takerAddress.toHex()
+  let taker = new User(takerID)
+  taker.save()
+
+  let feeRecipientID = event.params.feeRecipientAddress.toHex()
+  let feeRecipient = new User(feeRecipientID)
+  feeRecipient.save()
 }
 
 // Works
 export function handleCancel(event: Cancel): void {
   let id = event.params.orderHash.toHex()
-  let cancelledOrder = store.get("CancelledOrder", id) as CancelledOrder | null
 
+  let cancelledOrder = CancelledOrder.load(id)
   if (cancelledOrder == null) {
-    cancelledOrder = new CancelledOrder()
+    cancelledOrder = new CancelledOrder(id)
   }
 
   cancelledOrder.maker = event.params.makerAddress
@@ -55,35 +47,33 @@ export function handleCancel(event: Cancel): void {
   cancelledOrder.senderV2 = event.params.senderAddress
   cancelledOrder.makerAssetDataV2 = event.params.makerAssetData
   cancelledOrder.takerAssetDataV2 = event.params.takerAssetData
-  store.set('CancelledOrder', id, cancelledOrder as CancelledOrder)
+  cancelledOrder.save()
 
-  let user = new User()
-  let userid = event.params.makerAddress.toHex()
-  store.set("User", userid, user)
-
+  let userID = event.params.makerAddress.toHex()
+  let user = new User(userID)
+  user.save()
 }
 
 // NOTE - this event appears to never get emitted. Possibly a feature that no one uses in the protocol
 // NOTE - haven't been able to test the logic, because this event never gets emitted. It might crash the subgraph if there is an error in splice and indexOf ussage
 export function handleSignatureValidatorApproval(event: SignatureValidatorApproval): void {
   let id = event.params.signerAddress.toHex()
-  let user = store.get("User", id) as User | null
-
+  let user = User.load(id)
   if (user == null) {
-    user = new User()
+    user = new User(id)
     user.validatorsApproved = []
   }
 
   let proxies = user.validatorsApproved
 
-  if(event.params.approved == true){
+  if (event.params.approved == true) {
     proxies.push(event.params.validatorAddress)
   } else {
     let i = proxies.indexOf(event.params.validatorAddress, 0)
     proxies.splice(i, 1)
   }
-  store.set('User', id, user as User)
 
+  user.save()
 }
 
 // Handles registration of ERC720 and ERC20 proxy contracts. Only 2 events
