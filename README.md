@@ -16,7 +16,7 @@ This requires the Exchange Contract (v1 and v2) to be ingested by the subgraph, 
 Events Not Included
 
 * Exchange.sol / MExchangeCore.sol (v2)
-    * event CancelUpTo - It would not be very useful and it will emit the Cancel events for all orders that get cancelled
+    * event CancelUpTo - Can just use normal cancel events
     * event AssetProxyRegistered - Just emitted once or two to register proxies
 * Exchange.sol (v1)
     * event LogError - No use in tracking this anymore, with solidity error messages added
@@ -101,7 +101,7 @@ All of the contracts were examined for the 0x ecosystem. It was originally deter
  
  ```
  
- 6. e) You can also connect to ropsten, just follow the syntaxthat was used with the kovan example. 
+ 6. e) You can also connect to ropsten, just follow the syntax that was used with the kovan example. 
  
  7. Now deploy the 0x-Subgraph to The Graph Node with `yarn deploy --verbosity debug`. You should see a lot of blocks being skipped in the `graph-node` terminal, and then it will start ingesting events from the moment the contracts were uploaded to the network. 
 
@@ -116,7 +116,8 @@ The query below shows all the information that is possible to query, but is limi
 
 ```
 {
-  users(first: 5) {
+  users(first: 5){
+  # users(where: {id: "0x000b75fcdc15d41277deb033c72d2c8d774ccced"}) {
     id
     validatorsApproved
     filledOrdersMaker {
@@ -182,7 +183,7 @@ The query below shows all the information that is possible to query, but is limi
       tokensV1
     }
   }
-  cancelledOrders(first: 5) {
+  cancelledOrders(first: 5, orderBy: id) {
     id
     maker
     makerAssetDataV2
@@ -196,7 +197,6 @@ The query below shows all the information that is possible to query, but is limi
     tokensV1
   }
 }
-
 
 ```
 The command above can be copy pasted into the Graphiql interface in your browser at `127.0.0.1:8000`.

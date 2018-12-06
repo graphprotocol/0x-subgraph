@@ -87,7 +87,7 @@ export function handleSignatureValidatorApproval(event: SignatureValidatorApprov
 }
 
 // Handles registration of ERC720 and ERC20 proxy contracts. Only 2 events
-// REMOVED for now. Will completely remove in the future
+// Not handling, since it is only 2 events. This is only really important if you want to be notified of 0x changing their core contract addresses
 // export function handleAssetProxyRegistered(event: AssetProxyRegistered): void {
 //   let id = event.params.id.toHex()
 //   let proxy = new ApprovedProxy()
@@ -97,7 +97,7 @@ export function handleSignatureValidatorApproval(event: SignatureValidatorApprov
 
 
 
-// Could add this in the future, although I don't believe it adds much value. Would need to have someone request it
+// Not really needed, can just follow the cancelled events
 // export function handleCancelUpTo(event: CancelUpTo): void {
 //   let id = event.params.makerAddress.toHex()
 //
