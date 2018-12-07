@@ -48,7 +48,7 @@ A Graph Node can run multiple subgraphs, and in this case it can have a subgraph
 This subgraph has three types of files which tell the Graph Node to ingest events from specific contracts. They are:
 * The subgraph manifest (subgraph.yaml)
 * A GraphQL schema      (schema.graphql)
-* Mapping scripts       (ExchangeV1.sol, ExchangeV2.sol) 
+* Mapping scripts       (ExchangeV1.ts, ExchangeV2.ts) 
 
 This repository has these files created and ready to compile, so a user can start this subgraph on their own. The only thing that needs to be edited is the contract addresses in the `subgraph.yaml` file to change between Kovan, Ropsten or Mainnet.  
 
