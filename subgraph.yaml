@@ -33,7 +33,7 @@ dataSources:
 #      handler: handleAssetProxyRegistered
     - event: SignatureValidatorApproval(address,address,bool) # From MSignatureValidator.sol
       handler: handleSignatureValidatorApproval
-    file: ./mappings/ExchangeV2.ts
+    file: ./src/mappings/ExchangeV2.ts
 - kind: ethereum/contract
   name: ExchangeV1
   source:
@@ -55,4 +55,4 @@ dataSources:
       handler: handleLogFill
     - event: LogCancel(address,address,address,address,uint256,uint256,bytes32,bytes32)
       handler: handleLogCancel
-    file: ./mappings/ExchangeV1.ts
+    file: ./src/mappings/ExchangeV1.ts
